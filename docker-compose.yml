@@ -1,0 +1,32 @@
+# Local development services for Personal Manager.
+# Start with:  docker compose up -d
+# Stop with:   docker compose down   (add -v to also wipe the data volume)
+services:
+  db:
+    image: postgres:16
+    container_name: pm-postgres
+    # These credentials are for LOCAL DEV ONLY — the DB is reachable only on
+    # localhost, so it's fine to keep them in the repo. Real production
+    # secrets will come from environment variables, never a committed file.
+    environment:
+      POSTGRES_USER: pm
+      POSTGRES_PASSWORD: pm_dev_password
+      POSTGRES_DB: personal_manager
+    ports:
+      # host:container — 5432 (Homebrew Postgres) and 5433 (another
+      # project's container) are already taken, so we expose this one
+      # on 5434. Every connection from your machine uses 5434.
+      - "5434:5432"
+    volumes:
+      # Named volume: the data survives `docker compose down` and restarts.
+      - pm_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # Lets Docker (and later, our app's startup) know when Postgres is
+      # actually ready to accept connections, not just "container started".
+      test: ["CMD-SHELL", "pg_isready -U pm -d personal_manager"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  pm_pgdata:
