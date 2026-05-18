@@ -13,7 +13,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /healthz", handleHealth)
-
+	mux.HandleFunc("GET /version", handleVersion)
 	// TODO(you): register a "GET /version" route here that points at
 	// handleVersion (defined below). It's one line — copy the shape of
 	// the line above.
@@ -43,4 +43,6 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 // TODO(you): implement the body. Look at handleHealth for the pattern —
 // set the Content-Type header, then write the JSON bytes.
 func handleVersion(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(`{"version":"0.1.0"}`))
 }
