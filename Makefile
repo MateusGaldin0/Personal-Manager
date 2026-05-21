@@ -31,3 +31,7 @@ migrate.status:        ## Show which migrations have been applied.
 migrate.create:        ## Create a new empty migration. Usage: make migrate.create name=add_foo
 	@test -n "$(name)" || (echo "usage: make migrate.create name=<snake_case_name>" && exit 1)
 	$(GOOSE) -dir $(MIGRATIONS_DIR) create $(name) sql
+
+# --- code generation -------------------------------------------------------
+sqlc.gen:              ## Regenerate type-safe Go from internal/store/queries/*.sql.
+	go run github.com/sqlc-dev/sqlc/cmd/sqlc@latest generate

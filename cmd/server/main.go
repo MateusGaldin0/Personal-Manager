@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/MateusGaldin0/personal-manager/internal/database"
+	"github.com/MateusGaldin0/personal-manager/internal/finance"
 )
 
 const defaultDatabaseURL = "postgres://pm:pm_dev_password@localhost:5434/personal_manager"
@@ -28,6 +29,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", handleHealth)
 	mux.HandleFunc("GET /version", handleVersion)
+	finance.New(pool).Register(mux)
 
 	const addr = ":8080"
 	log.Printf("personal-manager listening on http://localhost%s", addr)
